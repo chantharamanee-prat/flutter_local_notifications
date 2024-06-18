@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:clock/clock.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
 import 'package:timezone/timezone.dart';
@@ -552,14 +553,7 @@ class AndroidFlutterLocalNotificationsPlugin
         break;
       case 'dismissNotification':
         return _onDismissNotification?.call(
-          NotificationResponse(
-            id: call.arguments['notificationId'],
-            actionId: call.arguments['actionId'],
-            input: call.arguments['input'],
-            payload: call.arguments['payload'],
-            notificationResponseType: NotificationResponseType
-                .values[call.arguments['notificationResponseType']],
-          ),
+          call.arguments,
         );
       default:
         return await Future<void>.error('Method not defined');

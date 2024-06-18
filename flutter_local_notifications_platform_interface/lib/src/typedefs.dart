@@ -13,4 +13,4 @@ typedef DidReceiveBackgroundNotificationResponseCallback = void Function(
 /// Signature of callback passed to [initialize] that is trigger when user dismiss a
 /// notification
 typedef DismissNotificationCallback = Future<void> Function(
-    NotificationResponse details);
+    int? id);

@@ -193,9 +193,12 @@ Future<void> main() async {
       }
     },
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-      onDismissNotification: (String? payload) async {
-        if (payload != null) {
-          debugPrint('dismiss notification payload: ' + payload);
+      onDismissNotification: (int? id) async {
+        if (id != null) {
+          debugPrint("response is not null");
+          debugPrint("${id}");
+        } else {
+          debugPrint("response is not null");
         }
       }
   );

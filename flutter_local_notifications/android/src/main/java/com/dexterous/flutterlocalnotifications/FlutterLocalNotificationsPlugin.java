@@ -1874,9 +1874,9 @@ public class FlutterLocalNotificationsPlugin
 
     if (DISMISS_NOTIFICATION.equals(intent.getAction()))
       {
-          Map<String, Object> notificationResponse = extractNotificationResponseMap(intent);
+          int notificationId =  intent.getIntExtra(NOTIFICATION_ID, 0);
           // String payload = intent.getStringExtra(PAYLOAD);
-          channel.invokeMethod("dismissNotification", notificationResponse);
+          channel.invokeMethod("dismissNotification", notificationId);
           return true;
       }
 
