@@ -109,7 +109,7 @@ class MethodChannelFlutterLocalNotificationsPlugin
 class AndroidFlutterLocalNotificationsPlugin
     extends MethodChannelFlutterLocalNotificationsPlugin {
   DidReceiveNotificationResponseCallback? _ondidReceiveNotificationResponse;
-
+  DismissNotificationCallback? _onDismissNotification;
   /// Initializes the plugin.
   ///
   /// Call this method on application before using the
@@ -131,8 +131,10 @@ class AndroidFlutterLocalNotificationsPlugin
     DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,
     DidReceiveBackgroundNotificationResponseCallback?
         onDidReceiveBackgroundNotificationResponse,
+      DismissNotificationCallback? onDismissNotification
   }) async {
     _ondidReceiveNotificationResponse = onDidReceiveNotificationResponse;
+    _onDismissNotification = onDismissNotification;
     _channel.setMethodCallHandler(_handleMethod);
 
     final Map<String, Object> arguments = initializationSettings.toMap();
@@ -548,6 +550,17 @@ class AndroidFlutterLocalNotificationsPlugin
           ),
         );
         break;
+      case 'dismissNotification':
+        return _onDismissNotification?.call(
+          NotificationResponse(
+            id: call.arguments['notificationId'],
+            actionId: call.arguments['actionId'],
+            input: call.arguments['input'],
+            payload: call.arguments['payload'],
+            notificationResponseType: NotificationResponseType
+                .values[call.arguments['notificationResponseType']],
+          ),
+        );
       default:
         return await Future<void>.error('Method not defined');
     }

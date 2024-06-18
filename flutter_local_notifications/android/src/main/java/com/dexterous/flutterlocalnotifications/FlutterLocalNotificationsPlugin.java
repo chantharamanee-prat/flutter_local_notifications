@@ -132,6 +132,7 @@ public class FlutterLocalNotificationsPlugin
   private static final String SELECT_NOTIFICATION = "SELECT_NOTIFICATION";
   private static final String SELECT_FOREGROUND_NOTIFICATION_ACTION =
       "SELECT_FOREGROUND_NOTIFICATION";
+  private static final String DISMISS_NOTIFICATION = "DISMISS_NOTIFICATION";
   private static final String SCHEDULED_NOTIFICATIONS = "scheduled_notifications";
   private static final String INITIALIZE_METHOD = "initialize";
   private static final String GET_CALLBACK_HANDLE_METHOD = "getCallbackHandle";
@@ -250,6 +251,18 @@ public class FlutterLocalNotificationsPlugin
     if (canCreateNotificationChannel(context, notificationChannelDetails)) {
       setupNotificationChannel(context, notificationChannelDetails);
     }
+
+    // delete intent (dismiss)
+    Intent deleteIntentRaw = getLaunchIntent(context);
+    deleteIntentRaw.setAction(DISMISS_NOTIFICATION);
+    deleteIntentRaw.putExtra(NOTIFICATION_ID, notificationDetails.id);
+    deleteIntentRaw.putExtra(PAYLOAD, notificationDetails.payload);
+    int deleteFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+    if (VERSION.SDK_INT >= VERSION_CODES.M) {
+      deleteFlags |= PendingIntent.FLAG_IMMUTABLE;
+    }
+    PendingIntent deleteIntent = PendingIntent.getActivity(context, notificationDetails.id, deleteIntentRaw, deleteFlags);
+
     Intent intent = getLaunchIntent(context);
     intent.setAction(SELECT_NOTIFICATION);
     intent.putExtra(NOTIFICATION_ID, notificationDetails.id);
@@ -275,6 +288,7 @@ public class FlutterLocalNotificationsPlugin
             .setTicker(notificationDetails.ticker)
             .setAutoCancel(BooleanUtils.getValue(notificationDetails.autoCancel))
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(deleteIntent)
             .setPriority(notificationDetails.priority)
             .setOngoing(BooleanUtils.getValue(notificationDetails.ongoing))
             .setSilent(BooleanUtils.getValue(notificationDetails.silent))
@@ -1857,6 +1871,14 @@ public class FlutterLocalNotificationsPlugin
       channel.invokeMethod("didReceiveNotificationResponse", notificationResponse);
       return true;
     }
+
+    if (DISMISS_NOTIFICATION.equals(intent.getAction()))
+      {
+          Map<String, Object> notificationResponse = extractNotificationResponseMap(intent);
+          // String payload = intent.getStringExtra(PAYLOAD);
+          channel.invokeMethod("dismissNotification", notificationResponse);
+          return true;
+      }
 
     return false;
   }

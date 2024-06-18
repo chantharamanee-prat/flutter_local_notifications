@@ -193,13 +193,18 @@ Future<void> main() async {
       }
     },
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+      onDismissNotification: (String? payload) async {
+        if (payload != null) {
+          debugPrint('dismiss notification payload: ' + payload);
+        }
+      }
   );
   runApp(
     MaterialApp(
       initialRoute: initialRoute,
       routes: <String, WidgetBuilder>{
         HomePage.routeName: (_) => HomePage(notificationAppLaunchDetails),
-        SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload)
+        SecondPage.routeName: (_) => SecondPage(selectedNotificationPayload),
       },
     ),
   );

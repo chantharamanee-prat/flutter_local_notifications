@@ -127,6 +127,7 @@ class FlutterLocalNotificationsPlugin {
     DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,
     DidReceiveBackgroundNotificationResponseCallback?
         onDidReceiveBackgroundNotificationResponse,
+      DismissNotificationCallback? onDismissNotification
   }) async {
     if (kIsWeb) {
       return true;
@@ -145,6 +146,7 @@ class FlutterLocalNotificationsPlugin {
         onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
         onDidReceiveBackgroundNotificationResponse:
             onDidReceiveBackgroundNotificationResponse,
+              onDismissNotification: onDismissNotification
       );
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       if (initializationSettings.iOS == null) {
